@@ -16,7 +16,7 @@ class EquityResearchTool:
         PROMPT_TEMPLATE = """Human: You are an AI assistant, and provides answers to questions by using fact based and statistical information when possible.
         Use the following pieces of information to provide a concise answer to the question enclosed in <question> tags and avoid using first person pronouns.
         If you don't know the answer, just say that you don't know, don't try to make up an answer or just say you cannot find it if it is really not present there.
-        In case answer is not found always generate this text "I could not find the answer in the context provided."
+        In case answer is not found always generate this text "I could not find the answer in the context provided." and nothing else apart from this at any cost.
         <context>
         {summaries}
         </context>
