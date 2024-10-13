@@ -6,6 +6,8 @@ from langchain.chains import RetrievalQAWithSourcesChain
 
 encoder = HuggingFaceEmbeddings(model_name="all-MiniLM-L12-v2")
 llm = ChatGroq(model="llama3-70b-8192", temperature=0.6)
+ZILLIZ_CLOUD_URI = "https://in03-a4e6155e8e44f89.serverless.gcp-us-west1.cloud.zilliz.com"
+ZILLIZ_CLOUD_API_KEY = "0277afb5c62783882bbf2b6e32fe17a2c5111fb956fec6b338af16a58d84124a94095656ecb23192f3647f0d15a0ebc269ce904a"
 
 
 class EquityResearchTool:
@@ -39,7 +41,12 @@ class EquityResearchTool:
         self.vector_store = Milvus(embedding_function=encoder,
                                    collection_name="finance_articles",
                                    auto_id=True,
-                                   index_params=index_params)
+                                   index_params=index_params,
+                                   connection_args={
+                                       "uri": ZILLIZ_CLOUD_URI,
+                                       "token": ZILLIZ_CLOUD_API_KEY,
+                                       "secure": True
+                                   })
 
     def add_documents(self, documents):
         self.vector_store.add_documents(documents=documents)
