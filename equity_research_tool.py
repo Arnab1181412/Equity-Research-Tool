@@ -96,3 +96,6 @@ class EquityResearchTool:
             source = result['source_documents'][0].metadata['source']
 
             return {"answer": answer, "source": source}
+
+    def delete_document(self, urls):
+        self.vector_store.delete(expr=f"source in {urls}")
