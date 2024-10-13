@@ -7,7 +7,9 @@ import streamlit as st
 load_dotenv()
 tool = EquityResearchTool()
 
-st.title("EquityBot: Finance and Equity News Research Tool 📈")
+st.markdown(
+    "<h2 style='text-align: left; color: red; width: 130%'>EquityBot: Finance and Equity News Research Tool 📈</h2>",
+    unsafe_allow_html=True)
 st.sidebar.title("News Article URLs")
 
 urls = []
@@ -22,7 +24,7 @@ col1, col2, col3 = st.columns([1, 1, 10])
 with col1:
     process_url_clicked = st.sidebar.button("Process URLs",
                                             use_container_width=True)
-st.header("Question: ")
+st.subheader("Question: ")
 main_placeholder = st.empty()
 
 if process_url_clicked:
