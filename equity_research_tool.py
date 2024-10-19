@@ -3,11 +3,15 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_milvus import Milvus
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQAWithSourcesChain
+import os
+from dotenv import load_dotenv
 
 encoder = HuggingFaceEmbeddings(model_name="all-MiniLM-L12-v2")
 llm = ChatGroq(model="llama3-70b-8192", temperature=0.6)
-ZILLIZ_CLOUD_URI = "https://in03-a4e6155e8e44f89.serverless.gcp-us-west1.cloud.zilliz.com"
-ZILLIZ_CLOUD_API_KEY = "0277afb5c62783882bbf2b6e32fe17a2c5111fb956fec6b338af16a58d84124a94095656ecb23192f3647f0d15a0ebc269ce904a"
+load_dotenv()
+
+ZILLIZ_CLOUD_URI = os.environ["ZILLIZ_CLOUD_URI"]
+ZILLIZ_CLOUD_API_KEY = os.environ["ZILLIZ_CLOUD_API_KEY"]
 
 
 class EquityResearchTool:
