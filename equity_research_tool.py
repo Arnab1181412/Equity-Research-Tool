@@ -44,16 +44,18 @@ class EquityResearchTool:
             },
             "metric_type": "COSINE"
         }
-        self.vector_store = Milvus(embedding_function=encoder,
-                                   collection_name="finance_articles",
-                                   auto_id=True,
-                                   text_field="text",
-                                   index_params=index_params,
-                                   connection_args={
-                                       "uri": ZILLIZ_CLOUD_URI,
-                                       "token": ZILLIZ_CLOUD_API_KEY,
-                                       "secure": True
-                                   })
+        self.vector_store = Milvus(
+            embedding_function=encoder,
+            collection_name="finance_articles",
+            auto_id=True,
+            text_field="text",
+            index_params=index_params,
+            connection_args={
+                "uri":
+                ZILLIZ_CLOUD_URI.encode("utf-8").decode("unicode_escape"),
+                "token": ZILLIZ_CLOUD_API_KEY,
+                "secure": True
+            })
 
     def add_documents(self, documents):
         self.vector_store.add_documents(documents=documents)
