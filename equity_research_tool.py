@@ -3,16 +3,13 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_milvus import Milvus
 from langchain.prompts import PromptTemplate
 from langchain.chains.qa_with_sources.retrieval import RetrievalQAWithSourcesChain
+import streamlit as st
 
-import os
-
-
-ZILLIZ_CLOUD_URI = os.getenv("ZILLIZ_CLOUD_URI")
-ZILLIZ_CLOUD_API_KEY = os.getenv("ZILLIZ_CLOUD_API_KEY")
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+ZILLIZ_CLOUD_URI = st.secrets["ZILLIZ_CLOUD_URI"]
+ZILLIZ_CLOUD_API_KEY = st.secrets["ZILLIZ_CLOUD_API_KEY"]
+GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
 encoder = HuggingFaceEmbeddings(model_name="all-MiniLM-L12-v2")
 llm = ChatGroq(model="llama3-70b-8192", temperature=0.6, api_key=GROQ_API_KEY)
-
 
 
 class EquityResearchTool:
