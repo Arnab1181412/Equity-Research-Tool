@@ -1,10 +1,21 @@
 from dotenv import load_dotenv
 from equity_research_tool import EquityResearchTool
-from langchain.document_loaders import UnstructuredURLLoader
+from langchain_community.document_loaders import UnstructuredURLLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import streamlit as st
+import trafilatura
+from langchain_core.documents import Document
 
 load_dotenv()
+
+
+def extract_text(url):
+    downloaded = trafilatura.fetch_url(url)
+    if downloaded:
+        return trafilatura.extract(downloaded)
+    return ""
+
+
 tool = EquityResearchTool()
 
 st.markdown(
@@ -28,12 +39,14 @@ st.subheader("Question: ")
 main_placeholder = st.empty()
 
 if process_url_clicked:
-
-    loader = UnstructuredURLLoader(urls)
+    docs = []
+    for url in urls:
+        text = extract_text(url)
+        if text:
+            docs.append(Document(page_content=text, metadata={"source": url}))
 
     main_placeholder.text("Data Loading...Started...✅✅✅")
 
-    data = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(
         separators=['\n\n', '\n', '.', ','],
         chunk_size=1000,
@@ -41,7 +54,7 @@ if process_url_clicked:
 
     main_placeholder.text("Text Splitter...Started...✅✅✅")
 
-    docs = text_splitter.split_documents(data)
+    docs = text_splitter.split_documents(docs)
     main_placeholder.text("Embedding Vector Started Building...✅✅✅")
 
     tool.add_documents(docs)

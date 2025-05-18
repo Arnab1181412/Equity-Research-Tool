@@ -2,7 +2,8 @@ from langchain_groq import ChatGroq
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_milvus import Milvus
 from langchain.prompts import PromptTemplate
-from langchain.chains import RetrievalQAWithSourcesChain
+from langchain.chains.qa_with_sources.retrieval import RetrievalQAWithSourcesChain
+
 import os
 from dotenv import load_dotenv
 
@@ -20,6 +21,7 @@ class EquityResearchTool:
         PROMPT_TEMPLATE = """Human: You are an AI assistant, and provides answers to questions by using fact based and statistical information when possible.
         Use the following pieces of information to provide a concise answer to the question enclosed in <question> tags and avoid using first person pronouns.
         If you don't know the answer, just say that you don't know, don't try to make up an answer or just say you cannot find it if it is really not present there.
+        If you know the answer, from your knowledge but it is not present in the context, then always generate this text "I could not find the answer in the context provided." and nothing else apart from this at any cost.
         In case answer is not found always generate this text "I could not find the answer in the context provided." and nothing else apart from this at any cost.
         <context>
         {summaries}
@@ -45,6 +47,7 @@ class EquityResearchTool:
         self.vector_store = Milvus(embedding_function=encoder,
                                    collection_name="finance_articles",
                                    auto_id=True,
+                                   text_field="text",
                                    index_params=index_params,
                                    connection_args={
                                        "uri": ZILLIZ_CLOUD_URI,
@@ -78,7 +81,7 @@ class EquityResearchTool:
                 return_source_documents=True,
                 chain_type_kwargs={"prompt": self.prompt})
 
-        result = chain(query)
+        result = chain.invoke(query)
         answer = result['answer']
         if answer != "I could not find the answer in the context provided.":
             if result['sources'] != "":
@@ -96,7 +99,7 @@ class EquityResearchTool:
                 return_source_documents=True,
                 chain_type_kwargs={"prompt": self.prompt})
 
-            result = chain(query)
+            result = chain.invoke(query)
             answer = result['answer']
             # still no relavant answers found
             if answer == "I could not find the answer in the context provided.":
